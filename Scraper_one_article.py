@@ -15,6 +15,9 @@ def scrape_article(url):
     """Scrape un article du Blog du Modérateur et le stocke dans MongoDB"""
     print(f"Scraping de l'article: {url}")
     
+    # Déterminer le type d'article basé sur l'URL
+    article_type = 'marketing' if '/marketing/' in url else 'web'
+    
     # Récupération de la page
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
@@ -30,6 +33,7 @@ def scrape_article(url):
     # Initialisation du dictionnaire pour stocker les données
     article_data = {
         'url': url,
+        'type': article_type,  # Ajout du type
         'scraped_at': datetime.now()
     }
     

@@ -39,3 +39,30 @@ $(document).ready(function() {
     // Charger les articles au chargement de la page
     loadArticles();
 });
+
+function scrapeArticles(category) {
+    const button = $(`button[onclick="scrapeArticles('${category}')"]`);
+    button.prop('disabled', true);
+    button.html(`<i class="fas fa-spinner fa-spin"></i> Chargement...`);
+
+    $.get(`/scrape/${category}`)
+        .done(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .fail(function(error) {
+            console.error('Erreur:', error);
+            alert('Erreur lors du scraping');
+        })
+        .always(function() {
+            button.prop('disabled', false);
+            button.html(`<i class="fas fa-sync"></i> Actualiser ${category.charAt(0).toUpperCase() + category.slice(1)}`);
+        });
+}
+
+function renderArticle(article, container) {
+    // ...existing code...
+}
+
+// ...existing code...

@@ -1,0 +1,29 @@
+/* Styles communs */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+/* Styles spécifiques aux articles web */
+#webArticles .card {
+    border-left: 4px solid #28a745;
+}
+
+/* Styles spécifiques aux articles marketing */
+#marketingArticles .card {
+    border-left: 4px solid #007bff;
+}
+
+/* ...existing styles... */
+
+/* Animations */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
