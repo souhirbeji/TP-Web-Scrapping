@@ -60,6 +60,7 @@ def get_article_titles(page_url):
             for img_index, img in enumerate(article.find_all('img'), 1):
                 img_src = img.get('src') or img.get('data-src', '')
                 if img_src:
+                    print(f"Image trouvée: {img_src}")
                     images[f'image_{img_index}'] = {
                         'url': img_src,
                         'alt': img.get('alt', ''),

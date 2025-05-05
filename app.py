@@ -14,25 +14,18 @@ db = client['blog_scraper']
 articles_collection = db['articles']
 
 @app.route('/')
-def index():
-    # Récupérer les filtres uniques pour les dropdowns
-    authors = articles_collection.distinct('author')
-    categories = articles_collection.distinct('category')
-    subcategories = articles_collection.distinct('subcategory')
-    
-    # Dates min et max pour le filtre de date
-    min_date = articles_collection.find_one({}, sort=[('publish_date', 1)])
-    max_date = articles_collection.find_one({}, sort=[('publish_date', -1)])
-    
-    min_date_str = min_date.get('publish_date', '2020-01-01') if min_date else '2020-01-01'
-    max_date_str = max_date.get('publish_date', '2023-12-31') if max_date else '2023-12-31'
-    
-    return render_template('index.html', 
-                          authors=authors, 
-                          categories=categories, 
-                          subcategories=subcategories,
-                          min_date=min_date_str,
-                          max_date=max_date_str)
+def home():
+    # Récupérer les derniers articles de MongoDB
+    latest_articles = articles_collection.find().sort('scraping_date', -1).limit(1)
+    latest_data = next(latest_articles, None)
+    return render_template('index.html', data=latest_data)
+
+@app.route('/scrape')
+def scrape():
+    # Déclencher un nouveau scraping
+    base_url = "https://www.blogdumoderateur.com/web/"
+    result = get_article_titles(base_url)
+    return render_template('index.html', data=result)
 
 @app.route('/search')
 def search():
@@ -136,19 +129,6 @@ def get_categories():
         'categories': categories,
         'subcategories': subcategories_by_cat
     })
-
-@app.route('/')
-def home():
-    # Récupérer les derniers articles de MongoDB
-    latest_scrape = articles_collection.find_one({}, sort=[('scraping_date', -1)])
-    return render_template('index.html', data=latest_scrape)
-
-@app.route('/scrape')
-def scrape():
-    # Déclencher un nouveau scraping
-    base_url = "https://www.blogdumoderateur.com/web/"
-    result = get_article_titles(base_url)
-    return render_template('index.html', data=result)
 
 if __name__ == '__main__':
     app.run(debug=True)
